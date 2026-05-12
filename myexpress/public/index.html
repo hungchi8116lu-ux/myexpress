@@ -1,0 +1,163 @@
+<html>
+
+<head>
+  <title>雞排價格觀測站</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+  <div id="app">
+    <h1>雞排價格觀測站</h1>
+    <p>Prices break your wallet. Track them faster.</p>
+
+    <h2>新增資料</h2>
+    <form id="dataForm" class="sentry-form">
+      <div class="form-group">
+        <label for="provider">商品名稱 (provider)</label>
+        <input type="text" id="provider" name="provider" placeholder="例如：雞排" required>
+      </div>
+
+      <div class="form-group">
+        <label for="price">商品價格 (price)</label>
+        <input type="number" id="price" name="price" placeholder="例如：80" required>
+      </div>
+
+      <div class="form-group">
+        <label for="date">日期 (date)</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+    <button type="submit">新增</button>
+  </form>
+
+  <p id="responseMessage" style="color: green; font-weight: bold;"></p>
+
+  <hr>
+  <h2>篩選資料</h2>
+  <div class="sentry-form filter-form">
+    <div class="form-group">
+      <label for="filterProvider">商品名稱篩選</label>
+      <input type="text" id="filterProvider" placeholder="例如：雞排">
+    </div>
+    <div class="form-group">
+      <label for="filterPrice">價格上限篩選</label>
+      <input type="number" id="filterPrice" placeholder="例如：100">
+    </div>
+    <div class="form-group">
+      <label for="filterDate">月份篩選</label>
+      <input type="month" id="filterDate">
+    </div>
+  </div>
+
+  <h2>雞排價格資料列表</h2>
+  <ul id="priceList" class="price-list">
+    <!-- 資料列將會被產生在這裡 -->
+  </ul>
+
+  </div>
+
+  <script>
+    const form = document.getElementById('dataForm');
+    const responseMessage = document.getElementById('responseMessage');
+    const priceList = document.getElementById('priceList');
+
+    // 篩選用的 DOM 元素
+    const filterProvider = document.getElementById('filterProvider');
+    const filterPrice = document.getElementById('filterPrice');
+    const filterDate = document.getElementById('filterDate');
+
+    let allPriceData = [];
+
+    // 渲染資料的函式
+    function renderList(data) {
+      // 清空現有表格內容
+      priceList.innerHTML = '';
+      
+      // 將每一筆資料加入表格
+      data.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="card-id">#${item.id}</div>
+          <div class="card-details">
+            <strong>${item.provider}</strong>
+            <span class="price-label">$${item.price}</span>
+          </div>
+          <div class="card-date">${item.date}</div>
+        `;
+        priceList.appendChild(li);
+      });
+    }
+
+    // 進行過濾
+    function applyFilters() {
+      const providerVal = filterProvider.value.trim().toLowerCase();
+      const priceVal = filterPrice.value;
+      const dateVal = filterDate.value;
+
+      const filteredData = allPriceData.filter(item => {
+        const matchProvider = item.provider.toLowerCase().includes(providerVal);
+        const matchPrice = priceVal ? item.price <= Number(priceVal) : true;
+        const matchDate = dateVal ? item.date.startsWith(dateVal) : true;
+        return matchProvider && matchPrice && matchDate;
+      });
+
+      renderList(filteredData);
+    }
+
+    // 監聽篩選輸入
+    filterProvider.addEventListener('input', applyFilters);
+    filterPrice.addEventListener('input', applyFilters);
+    filterDate.addEventListener('change', applyFilters);
+
+    // 載入表格資料的函式
+    async function loadTableData() {
+      try {
+        const response = await fetch('/api/price');
+        allPriceData = await response.json();
+        
+        applyFilters(); // 載入後套用過濾（如果一開始有輸入）
+      } catch (err) {
+        console.error('取得資料失敗:', err);
+      }
+    }
+
+    // 頁面載入時，先執行一次抓取資料
+    loadTableData();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // 阻止表單預設的跳轉行為
+
+      // 取得表單輸入的資料
+      const provider = document.getElementById('provider').value;
+      const price = document.getElementById('price').value;
+      const date = document.getElementById('date').value;
+
+      // 組合給 GET 請求的 Query String
+      const params = new URLSearchParams({ provider, price, date });
+
+      try {
+        // 使用 fetch 發送 GET 請求
+        const response = await fetch(`/api/insert?${params.toString()}`);
+        
+        // 因為 app.js 中該 API 成功後是使用 res.send() 回傳「純文字」，所以這裡用 text() 解析
+        const textData = await response.text();
+
+        // 將伺服器回傳的文字顯示在 p 標籤中
+        if (response.ok) {
+          responseMessage.style.color = 'green';
+          responseMessage.innerText = textData;
+          // 新增成功後，重新載入最新資料至表格
+          loadTableData();
+        } else {
+          responseMessage.style.color = 'red';
+          responseMessage.innerText = `錯誤: ${textData}`;
+        }
+      } catch (err) {
+        responseMessage.style.color = 'red';
+        responseMessage.innerText = `連線失敗: ${err.message}`;
+      }
+    });
+  </script>
+</body>
+
+</html>

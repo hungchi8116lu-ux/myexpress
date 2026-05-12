@@ -1,0 +1,175 @@
+:root {
+  --color-bg-primary: #1f1633;
+  --color-bg-secondary: #150f23;
+  --color-border: #362d59;
+  --color-btn-muted: #79628c;
+  --color-btn-border: #584674;
+  --color-accent-lime: #c2ef4e;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e5e7eb;
+  --color-input-bg: #ffffff;
+  --color-input-border: #cfcfdb;
+  --color-input-text: #1f1633;
+  
+  --font-family-display: "Dammit Sans", Impact, Arial Black, sans-serif;
+  --font-family-ui: "Rubik", -apple-system, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-family-ui);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  padding: 2rem;
+  margin: 0;
+}
+
+body > * {
+  max-width: 1152px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#app {
+  padding: 0 1rem;
+}
+
+h1 {
+  font-family: var(--font-family-display);
+  font-size: 80px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="month"] {
+  background-color: var(--color-input-bg);
+  color: var(--color-input-text);
+  border: 1px solid var(--color-input-border);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: var(--font-family-ui);
+  outline: none;
+  transition: all 0.2s ease;
+}
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus {
+  box-shadow: inset 0px 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.sentry-form {
+  background-color: var(--color-bg-secondary);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  margin-bottom: 2rem;
+  max-width: 500px;
+}
+
+.sentry-form.filter-form {
+  max-width: 100%;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.sentry-form.filter-form .form-group {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: 0;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  color: var(--color-text-secondary);
+}
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button[type="submit"] {
+  background-color: var(--color-btn-muted);
+  color: #fff;
+  border: 1px solid var(--color-btn-border);
+  border-radius: 13px;
+  padding: 12px 24px;
+  text-transform: uppercase;
+  font-family: var(--font-family-ui);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+button[type="submit"]:hover {
+  box-shadow: 0px 0.5rem 1.5rem rgba(0, 0, 0, 0.18);
+  transform: translateY(-2px);
+}
+
+#responseMessage {
+  font-family: Monaco, Consolas, monospace;
+  color: var(--color-text-secondary) !important;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+}
+
+.price-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.price-list li {
+  background-color: rgba(255, 255, 255, 0.05); /* or fallback glass */
+  backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--color-bg-secondary);
+}
+
+.card-id {
+  color: var(--color-accent-lime);
+  font-family: var(--font-family-display);
+  font-weight: bold;
+}
+
+.card-details {
+  flex-grow: 1;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.price-label {
+  color: var(--color-text-secondary);
+  font-size: 0.9em;
+  margin-top: 4px;
+}
+
+.card-date {
+  font-size: 0.8em;
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
